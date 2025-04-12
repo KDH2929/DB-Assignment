@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.title">
+
+    <!-- user select by userId -->
+    <select id="selectUser" resultType="com.title.DTO.userDTO" parameterType="String">
+        SELECT *
+        FROM user
+        WHERE userId=#{userId}
+    </select>
+
+    <!-- select movies by user like -->
+    <select id="selectMovie" resultType="com.title.DTO.titleDTO" parameterType="String">
+        SELECT movieTitle, ratingScore
+        FROM user
+                 NATURAL JOIN movie
+                 NATURAL JOIN ratings
+        WHERE userId=#{userId}
+        ORDER BY ratingScore DESC;
+    </select>
+
+    <!-- 같은 직업을 가진 사람들이 좋아하는 영화 Top 10 -->
+    <select id="selectOccupationMovies" resultType="com.title.DTO.titleDTO" parameterType="String">
+        SELECT movieTitle
+        FROM user
+                 NATURAL JOIN movie
+                 NATURAL JOIN ratings
+        WHERE occupation=#{occupation}
+        GROUP BY movieTitle
+        ORDER BY count(*) DESC
+            LIMIT 10;
+    </select>
+
+    <!-- 같은 연령대 사람들이 좋아하는 영화 Top 10 -->
+    <select id="selectAgeGroupMovies" resultType="com.title.DTO.titleDTO" parameterType="int">
+        SELECT movieTitle
+        FROM user
+            NATURAL JOIN movie
+            NATURAL JOIN ratings
+        WHERE age BETWEEN #{ageGroup} AND #{ageGroup} + 9
+        GROUP BY movieTitle
+        ORDER BY count(*) DESC
+        LIMIT 10;
+    </select>
+
+
+    <!-- pearson 상관계수를 이용한 추천 알고리즘에 의한 top 10 영화-->
+    <select id="selectRecommendedMovies" resultType="com.title.DTO.titleDTO" parameterType="String">
+        SELECT m.movieTitle, r.predictedRating
+        FROM recommendations AS r
+                 JOIN movie AS m ON r.movieId = m.movieId
+        WHERE r.userId=#{userId}
+        ORDER BY r.predictedRating DESC
+            LIMIT 10;
+    </select>
+
+    <!-- 같은 성별을 가진 사람들이 좋아하는 영화 Top 10 -->
+    <select id="selectGenderMovies" resultType="com.title.DTO.titleDTO" parameterType="String">
+        SELECT movieTitle
+        FROM user
+                 NATURAL JOIN movie
+                 NATURAL JOIN ratings
+        WHERE gender=#{gender}
+        GROUP BY movieTitle
+        ORDER BY COUNT(*) DESC
+            LIMIT 10;
+    </select>
+
+
+    <!-- cosine 유사도를 이용한 추천 알고리즘에 의한 top 10 영화 -->
+    <select id="selectRecommendedMovies_Cosine" resultType="com.title.DTO.titleDTO" parameterType="String">
+        SELECT m.movietitle, r.predictedrating
+        FROM recommendations_cosine AS r
+                 JOIN movie AS m ON r.movieid = m.movieid
+        WHERE r.userid=#{userid}
+        ORDER BY r.predictedrating DESC
+            limit 10;
+    </select>
+</mapper>
