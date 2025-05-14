@@ -8,7 +8,7 @@ import pymysql
 
 def load_data_from_db():
     # DB에 연결
-    db = pymysql.connect(host='localhost', port=3306, user='root', password='1423', db='ml_chap3')
+    db = pymysql.connect(host='localhost', port=3306, user='root', password='9999', db='ml_chap3')
 
     try:
         with db.cursor() as cursor:
