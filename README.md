@@ -1,4 +1,4 @@
-# DB_Assignment
+# DB-Assignment
 
 - 기반 기술: Python, Java (Spring Framework), DB (MySQL)
 - 영화 추천 시스템 구현
